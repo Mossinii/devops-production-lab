@@ -1,0 +1,29 @@
+services:
+  web:
+    build: .
+    container_name: netz_web_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PGHOST: db
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGPASSWORD: "${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no arquivo .env}"
+      PGDATABASE: netzlaboratorio
+    depends_on:
+      - db
+
+  db:
+    image: docker.io/library/postgres:15-alpine
+    container_name: netz_postgres_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no arquivo .env}"
+      POSTGRES_DB: netzlaboratorio
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
